@@ -1,0 +1,26 @@
+{
+  "name": "cushion-adapter-couchbase",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:iconiqgmbh/cushion-adapter-couchbase.git"
+  },
+  "author": "",
+  "devDependencies": {
+    "should": "^4.4.1",
+    "mocha": "^2.1.0",
+    "gulp-mocha": "^2.0.0",
+    "gulp": "^3.8.10",
+    "gulp-jshint": "^1.9.0"
+  },
+  "dependencies": {
+    "couchbase": "^2.0.6",
+    "async": "^0.9.0",
+    "debug": "^2.1.1"
+  }
+}
