@@ -1,6 +1,7 @@
 'use strict';
 
-module.exports = function(Couchbase) {
+module.exports = function(cushion, Couchbase) {
+    var Model = cushion._Model;
 
     function getResults(response) {
         var value = response;
@@ -176,27 +177,18 @@ module.exports = function(Couchbase) {
             }
 
             db.query(query, function(err, res) {
+                var resultModel = null;
                 if (err) return cb(err, null, res);
-                var models = [];
 
                 if (res) {
-                    var values = getResults(res);
-
-                    for (var i = 0; i < values.length; i++) {
-                        var resultModel = new RequestModel({ adapter: db });
-
-                        var modelValue = values[i].value;
-                        if (typeof modelValue == 'string')
-                            modelValue = JSON.parse(modelValue);
-
-                        resultModel.set(modelValue);
-                        models.push(resultModel);
+                    var resultValue = getOneResult(res);
+                    if (resultValue) {
+                        resultModel = new RequestModel({ adapter: db });
+                        resultModel.set(getOneResult(res));
                     }
-                } else {
-                    err = new Error('could not get documents from bucket');
                 }
 
-                cb(err, models, res);
+                return cb(err, resultModel, res);
             });
 
             return this;

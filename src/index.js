@@ -3,7 +3,7 @@
 var debug = require('debug')('cc-adapter:couchbase');
 
 var Adapter = require('./adapter'),
-    cushionMethods = require('./cushion-methods');
+    CushionMethods = require('./cushion-methods'),
     async = require('async');
 
 /**
@@ -11,11 +11,11 @@ var Adapter = require('./adapter'),
  *
  * @class
  */
-function AdapterCouchbaseInstaller() {
+function AdapterCouchbaseInstaller(options) {
     this.options = options || {};
 }
 
-module.exports = exports = new AdapterCouchbaseInstaller();
+module.exports = exports = AdapterCouchbaseInstaller;
 
 
 /**
@@ -57,11 +57,11 @@ function installCouchbase(cushion, options) {
     debug('set cushion adapter to this');
 
     if (!options.skipMethods) {
-        var methods = cushionMethods(adapter.Cb);
-        for (var key in cushionMethods) {
+        var methods = CushionMethods(cushion, adapter.Cb);
+        for (var key in methods) {
             if (cushion[key]) continue;
 
-            cushion[key] = cushionMethods[key].bind(cushion);
+            cushion[key] = methods[key].bind(cushion);
             debug('bound method `'+key+'` to cushion');
         }
     }
@@ -69,8 +69,8 @@ function installCouchbase(cushion, options) {
     if (!options.skipProperties) {
 
         // Add the Cb properties to the cushion instance itself
-        cushion.prototype.Cb =
-        cushion.prototype.Couchbase =
+        cushion.Cb =
+        cushion.Couchbase =
             adapter.Couchbase;
 
     }

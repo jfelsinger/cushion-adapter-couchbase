@@ -1,9 +1,4 @@
-var CouchCushion = require('./src'),
-    walk = require('./lib/walk');
+var AdapterInstaller = require('./src');
+AdapterInstaller = new AdapterInstaller();
 
-// require all included models here
-walk(__dirname + '/src/models', function(file) {
-    require(file)(CouchCushion);
-});
-
-module.exports = exports = CouchCushion;
+module.exports = exports = AdapterInstaller;

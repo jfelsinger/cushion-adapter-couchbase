@@ -205,3 +205,8 @@ function query(q, cb) {
 
     return this;
 }
+
+
+
+
+module.exports = AdapterCouchbase;
