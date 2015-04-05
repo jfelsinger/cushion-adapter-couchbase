@@ -1,7 +1,7 @@
 {
   "name": "cushion-adapter-couchbase",
   "version": "0.1.0",
-  "description": "",
+  "description": "An adapter for connecting Couchbase to Couch Cushion ODM",
   "main": "index.js",
   "scripts": {
     "test": "node ./node_modules/gulp/bin/gulp.js tr-test"
