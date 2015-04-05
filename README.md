@@ -4,7 +4,7 @@
 ### Installation
 
 ```
-npm install --save git+ssh://git@bitbucket.org:iconiqgmbh/cushion-adapter-couchbase.git
+npm install --save cushion-adapter-couchbase
 ```
 
 ```javascript
