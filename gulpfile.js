@@ -36,6 +36,11 @@ gulp.task('test', ['lint'], function() {
         .on('error', handle);
 });
 
+gulp.task('tr-test', ['lint'], function() {
+    return gulp.src('test/**/*.js')
+        .pipe(mocha({ reporter: 'list' }));
+});
+
 gulp.task('watch', ['test'], function() {
     // Linting tasks
     gulp.watch([
