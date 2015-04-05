@@ -123,8 +123,11 @@ module.exports = function(cushion, Couchbase) {
          */
         fromQuery: function(model, cb, query, db) {
             db = db || this._adapter;
+
+            // Get the requested Model class that queried values represent
             var RequestModel = this.getModel(model);
 
+            // If the Model couldn't be found give an error response
             if (!(RequestModel && RequestModel.prototype instanceof Model)) {
                 var err = new Error('requested model type `'+model+'` not found');
                 return cb(err, null, null);
@@ -137,13 +140,16 @@ module.exports = function(cushion, Couchbase) {
                 if (res) {
                     var values = getResults(res);
 
+                    // Convert results into instantiated models
                     for (var i = 0; i < values.length; i++) {
-                        var resultModel = new RequestModel({ adapter: db });
-
+                        // Get the actual value for the row
                         var modelValue = values[i].value;
-                        if (typeof modelValue == 'string')
+                        if (typeof(modelValue) === 'string')
                             modelValue = JSON.parse(modelValue);
 
+                        // Instantiate new Model, set it's data, and add it to
+                        // the result set.
+                        var resultModel = new RequestModel({ adapter: db });
                         resultModel.set(modelValue);
                         models.push(resultModel);
                     }
@@ -177,15 +183,22 @@ module.exports = function(cushion, Couchbase) {
             }
 
             db.query(query, function(err, res) {
-                var resultModel = null;
                 if (err) return cb(err, null, res);
+                var resultModel = null;
 
                 if (res) {
+                    // Get the first value from the results
                     var resultValue = getOneResult(res);
+                    if (typeof(resultValue) === 'string')
+                        resultValue = JSON.parse(resultValue);
+
+                    // Instantiate new Model and set it's data
                     if (resultValue) {
                         resultModel = new RequestModel({ adapter: db });
-                        resultModel.set(getOneResult(res));
+                        resultModel.set(resultValue);
                     }
+                } else {
+                    err = new Error('could not get documents from bucket');
                 }
 
                 return cb(err, resultModel, res);

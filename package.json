@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/gulp/bin/gulp.js tr-test"
   },
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:iconiqgmbh/cushion-adapter-couchbase.git"
+    "url": "git@github.com:jfelsinger/cushion-adapter-couchbase.git"
   },
-  "author": "",
+  "author": "Joel Felsinger <jffelsinger@gmail.com> (http://joelfredrick.com)",
   "devDependencies": {
     "should": "^4.4.1",
     "mocha": "^2.1.0",

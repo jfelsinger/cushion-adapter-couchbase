@@ -102,6 +102,7 @@ function get(names, cb) {
  * Save objects to Couchbase
  */
 AdapterCouchbase.prototype.save =
+AdapterCouchbase.prototype.upsert =
 function save(names, data, cb) {
     if (!Array.isArray(names)) {
         debug('save (1) doc: ', names);
@@ -112,6 +113,7 @@ function save(names, data, cb) {
 
     var requests = names.map(function(name) {
         return function(cb) {
+            debug('saving doc: %s', name);
             this.options.bucket.upsert(name, data, cb);
         }.bind(this);
     }.bind(this));
@@ -126,6 +128,7 @@ function save(names, data, cb) {
  * Remove objects from Couchbase
  */
 AdapterCouchbase.prototype.del =
+AdapterCouchbase.prototype.remove =
 function del(names, cb) {
     if (!Array.isArray(names)) {
         debug('delete (1) doc: ', names);
@@ -173,6 +176,7 @@ function insert(names, data, cb) {
  * Update objects in Couchbase
  */
 AdapterCouchbase.prototype.update =
+AdapterCouchbase.prototype.replace =
 function update(names, data, cb) {
     if (!Array.isArray(names)) {
         debug('update (1) doc: ', names);
