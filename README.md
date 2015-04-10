@@ -68,6 +68,10 @@ result that is returned is the first doc that Couchbase returns.
 Ex:
 
 ```javascript
+var cb = function(err, model, res) {
+    /* ... */
+}
+
 // Using a query
 var query = cushion.CB.ViewQuery
     .from('userDesignDoc', 'by_username')
@@ -87,6 +91,10 @@ Same as above, but returns an array of objects.
 Ex:
 
 ```javascript
+var cb = function(err, models, res) {
+    /* ... */
+}
+
 // Using a query
 var query = cushion.CB.ViewQuery
     .from('userDesignDoc', 'by_status')
