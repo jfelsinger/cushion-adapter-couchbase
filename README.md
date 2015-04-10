@@ -40,3 +40,114 @@ options on to the adapter.
     managementTimeout:  undefined,
 }
 ```
+
+
+# Couch Cushion Methods and Properties
+
+After installing the Couchbase adapter a number of new properties and methods
+become available to the base CouchCushion object. The new methods and properties
+are to ease the process of communicating with Couchbase through the adapter.
+
+## Properties
+
+*Cb / Couchbase*:
+
+Allows access to the same Couchbase instance used by the adapter.
+
+ex: `cushion.Cb` / `cushion.Couchbase`
+
+
+## Methods
+
+### CouchCushion.getOne(*model*, *cb*, *search*[, *key*[, *doc*[, *db*]]])
+
+Gets a single model from Couchbase using a query. The method accepts either an
+already constructed query or arguments that can be used to create a query. The
+result that is returned is the first doc that Couchbase returns.
+
+Ex:
+
+```javascript
+// Using a query
+var query = cushion.CB.ViewQuery
+    .from('userDesignDoc', 'by_username')
+    .key('jfelsinger');
+
+cushion.getOne('User', cb, query);
+
+// Using parts of a query
+cushion.getOne('User', cb, 'by_username', 'jfelsinger', 'userDesignDoc');
+```
+
+
+### CouchCushion.getMany(*model*, *cb*, *search*[, *key*[, *doc*[, *db*]]])
+
+Same as above, but returns an array of objects.
+
+Ex:
+
+```javascript
+// Using a query
+var query = cushion.CB.ViewQuery
+    .from('userDesignDoc', 'by_status')
+    .key('online');
+
+cushion.getOne('User', cb, query);
+
+// Using parts of a query
+cushion.getMany('User', cb, 'by_status', 'online', 'userDesignDoc');
+```
+
+
+### CouchCushion.fromQuery(*model*, *cb*, *query*[, *db*])
+
+Gets an array of models from a query, much like `getMany()`.
+
+Ex:
+
+```javascript
+// Using a query
+var query = cushion.CB.ViewQuery
+    .from('userDesignDoc', 'by_status')
+    .key('online');
+
+cushion.fromQuery('User', cb, query);
+```
+
+
+### CouchCushion.oneFromQuery(*model*, *cb*, *query*[, *db*])
+
+Gets a single model from a query, much like `getOne()`.
+
+Ex:
+
+```javascript
+// Using a query
+var query = cushion.CB.ViewQuery
+    .from('userDesignDoc', 'by_username')
+    .key('jfelsinger');
+
+cushion.oneFromQuery('User', cb, query);
+```
+
+
+### CouchCushion.fromView(*model*, *cb*, *view*, *key*, *doc*[, *db*[, *isMultiKey*]])
+
+Gets an array of models from a view query, much like `getMany()`.
+
+Ex:
+
+```javascript
+cushion.fromView('User', cb, 'by_status', 'online', 'userDesignDoc');
+```
+
+
+### CouchCushion.oneFromView(*model*, *cb*, *view*, *key*, *doc*[, *db*[, *isMultiKey*]])
+
+Gets a single model from a view query, much like `getOne()`.
+
+Ex:
+
+```javascript
+cushion.oneFromView('User', cb, 'by_username', 'jfelsinger', 'userDesignDoc');
+```
