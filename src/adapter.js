@@ -1,6 +1,6 @@
 'use strict';
 
-var debug = require('debug')('cc-adapter:couchbase')
+var debug = require('debug')('cc-adapter:couchbase');
 
 var Couchbase = require('couchbase'),
     async = require('async');
@@ -52,9 +52,7 @@ AdapterCouchbase.prototype.setOption = function(option, value) {
  * @returns {AdapterCouchbase}
  */
 AdapterCouchbase.prototype.connect = function connect(options) {
-    if (typeof(options.host) !== 'string' ||
-        typeof(options.bucket) !== 'string')
-        throw new Error('invalid options given for connection');
+    options = options || {};
 
     var cluster = new Couchbase.Cluster(options.host);
     var bucket = options.bucketPassword ?
@@ -82,7 +80,7 @@ AdapterCouchbase.prototype.connect = function connect(options) {
  * Get objects from Couchbase
  */
 AdapterCouchbase.prototype.get =
-function get(names, cb) {
+function get(names) {
     if (!Array.isArray(names)) {
         debug('get (1) doc: ', names);
     } else {
@@ -102,7 +100,6 @@ function get(names, cb) {
  * Save objects to Couchbase
  */
 AdapterCouchbase.prototype.save =
-AdapterCouchbase.prototype.upsert =
 function save(names, data, cb) {
     if (!Array.isArray(names)) {
         debug('save (1) doc: ', names);
@@ -113,7 +110,6 @@ function save(names, data, cb) {
 
     var requests = names.map(function(name) {
         return function(cb) {
-            debug('saving doc: %s', name);
             this.options.bucket.upsert(name, data, cb);
         }.bind(this);
     }.bind(this));
@@ -128,8 +124,7 @@ function save(names, data, cb) {
  * Remove objects from Couchbase
  */
 AdapterCouchbase.prototype.del =
-AdapterCouchbase.prototype.remove =
-function del(names, cb) {
+function del(names) {
     if (!Array.isArray(names)) {
         debug('delete (1) doc: ', names);
     } else {
@@ -176,7 +171,6 @@ function insert(names, data, cb) {
  * Update objects in Couchbase
  */
 AdapterCouchbase.prototype.update =
-AdapterCouchbase.prototype.replace =
 function update(names, data, cb) {
     if (!Array.isArray(names)) {
         debug('update (1) doc: ', names);
@@ -201,14 +195,14 @@ function update(names, data, cb) {
  * Query objects from Couchbase
  */
 AdapterCouchbase.prototype.query =
-function query(q, cb) {
+function query() {
     this.options.bucket.query.apply(
         this.options.bucket,
         arguments
     );
 
     return this;
-}
+};
 
 
 

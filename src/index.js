@@ -3,8 +3,8 @@
 var debug = require('debug')('cc-adapter:couchbase');
 
 var Adapter = require('./adapter'),
-    CushionMethods = require('./cushion-methods'),
-    async = require('async');
+    MockAdapter = require('./mock-adapter'),
+    cushionMethods = require('./cushion-methods');
 
 /**
  * An ODM class for communicating with Couchbase
@@ -49,7 +49,7 @@ function(option, value) {
  */
 AdapterCouchbaseInstaller.prototype.install =
 function installCouchbase(cushion, options) {
-    options = options || this.options;
+    options = options || this.options || {};
 
     var adapter = new Adapter();
 
@@ -57,7 +57,7 @@ function installCouchbase(cushion, options) {
     debug('set cushion adapter to this');
 
     if (!options.skipMethods) {
-        var methods = CushionMethods(cushion, adapter.Cb);
+        var methods = cushionMethods(cushion, adapter.Cb);
         for (var key in methods) {
             if (cushion[key]) continue;
 
@@ -77,3 +77,39 @@ function installCouchbase(cushion, options) {
 
     return this;
 };
+
+/**
+ * Install a database adapter for use
+ */
+AdapterCouchbaseInstaller.prototype.Mock = {
+    install: function installCouchbase(cushion, options) {
+        options = options || this.options || {};
+
+        var adapter = new MockAdapter();
+
+        cushion._adapter = adapter;
+        debug('set cushion adapter to this');
+
+        if (!options.skipMethods) {
+            var methods = cushionMethods(cushion, adapter.Cb);
+            for (var key in methods) {
+                if (cushion[key]) continue;
+
+                cushion[key] = methods[key].bind(cushion);
+                debug('bound method `'+key+'` to cushion');
+            }
+        }
+
+        if (!options.skipProperties) {
+
+            // Add the Cb properties to the cushion instance itself
+            cushion.Cb =
+            cushion.Couchbase =
+                adapter.Couchbase;
+
+        }
+
+        return this;
+    },
+};
+
