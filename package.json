@@ -1,6 +1,6 @@
 {
   "name": "cushion-adapter-couchbase",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An adapter for connecting Couchbase to Couch Cushion ODM",
   "main": "index.js",
   "scripts": {
