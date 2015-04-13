@@ -41,6 +41,17 @@ options on to the adapter.
 }
 ```
 
+# Mock Interface
+
+The adapter can be setup to use Couchbase SDK's mock interface for testing.
+
+```javascript
+var cushion = require('couch-cushion'),
+    adapter = require('cushion-adapter-couchbase');
+
+cushion.install(adapter.Mock); // Install Mock adapter
+cushion.connect({ /* adapter config */ });
+```
 
 # Couch Cushion Methods and Properties
 
