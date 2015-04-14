@@ -70,7 +70,7 @@ module.exports = function(cushion, Couchbase) {
          * @param {*} adapter
          * @returns {AdapterCouchbase}
          */
-        getOne: function(model, cb, search, key, doc, db) {
+        getOne: function getOne(model, cb, search, key, doc, db) {
             if (search instanceof Couchbase.ViewQuery ||
                (search.keys && search.key && search.from)) {
                     return this.oneFromQuery(model, cb, search, db);
@@ -91,7 +91,7 @@ module.exports = function(cushion, Couchbase) {
          * @param {*} adapter
          * @returns {AdapterCouchbase}
          */
-        getMany: function(model, cb, search, key, doc, db) {
+        getMany: function getMany(model, cb, search, key, doc, db) {
 
             if (search instanceof Couchbase.ViewQuery ||
                (search.keys && search.key && search.from)) {
@@ -121,7 +121,7 @@ module.exports = function(cushion, Couchbase) {
          * @param {*} adapter
          * @returns {AdapterCouchbase}
          */
-        fromQuery: function(model, cb, query, db) {
+        fromQuery: function fromQuery(model, cb, query, db) {
             db = db || this._adapter;
 
             // Get the requested Model class that queried values represent
@@ -173,7 +173,7 @@ module.exports = function(cushion, Couchbase) {
          * @param {*} adapter
          * @returns {AdapterCouchbase}
          */
-        oneFromQuery: function(model, cb, query, db) {
+        oneFromQuery: function oneFromQuery(model, cb, query, db) {
             db = db || this._adapter;
             var RequestModel = this.getModel(model);
 
@@ -222,7 +222,7 @@ module.exports = function(cushion, Couchbase) {
          * @param {*} adapter
          * @returns {AdapterCouchbase}
          */
-        fromView: function(model, cb, view, key, doc, db, isMultiKey) {
+        fromView: function fromView(model, cb, view, key, doc, db, isMultiKey) {
             var query = buildViewQuery(view, key, doc, isMultiKey, this.options.stale);
             return this.fromQuery(model, cb, query, db);
         },
@@ -239,50 +239,9 @@ module.exports = function(cushion, Couchbase) {
          * @param {*} adapter
          * @returns {AdapterCouchbase}
          */
-        oneFromView: function(model, cb, view, key, doc, db, isMultiKey) {
+        oneFromView: function oneFromView(model, cb, view, key, doc, db, isMultiKey) {
             var query = buildViewQuery(view, key, doc, isMultiKey, this.options.stale);
             return this.oneFromQuery(model, cb, query, db);
         },
-
-
-        // getFromElasticsearch: function(es, cb, model, db) {
-        //     db = db || this.options.db;
-        //     var Model;
-        //
-        //     if (model)
-        //         Model = this.getModel(model);
-        //
-        //     if (!(es && es.test))
-        //         return cb(new Error('Malformed Elasticsearch Response'));
-        //
-        //     var hits = es.hits;
-        //
-        //     var docs = [];
-        //     var requests = hits.map(function(val) {
-        //         return function(cb) {
-        //             var err;
-        //             var doc = val._source.doc;
-        //
-        //             if (!Model && doc && doc.type) {
-        //                 Model = this.getModel(doc.type.capitalize(true));
-        //             }
-        //
-        //             if (Model) {
-        //                 model = new Model();
-        //                 model.set(doc);
-        //             } else {
-        //                 err = 'Could not get model: ' + (val && val.id) || val;
-        //             }
-        //
-        //             debug('received doc: ' + (val && val.id) || val);
-        //             docs.push(model);
-        //             cb(err);
-        //         };
-        //     }.bind(this));
-        //
-        //     async.parallel(requests, function(err) {
-        //         cb(err, docs, es);
-        //     });
-        // },
     };
 };

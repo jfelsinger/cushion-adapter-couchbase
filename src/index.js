@@ -15,8 +15,6 @@ function AdapterCouchbaseInstaller(options) {
     this.options = options || {};
 }
 
-module.exports = exports = AdapterCouchbaseInstaller;
-
 
 /**
  * Sets or gets an option
@@ -78,38 +76,59 @@ function installCouchbase(cushion, options) {
     return this;
 };
 
+
+
+
+module.exports = exports = AdapterCouchbaseInstaller;
+
+
+// ----------------------
+//  Mock Adapter
+// ----------------------
+
+
+function MockAdapterCouchbaseInstaller() {
+    AdapterCouchbaseInstaller.call(this, arguments);
+}
+
+// Extend the regular adapter installer
+MockAdapterCouchbaseInstaller.prototype =
+    Object.create(AdapterCouchbaseInstaller.prototype);
+MockAdapterCouchbaseInstaller.prototype.constructor =
+    MockAdapterCouchbaseInstaller;
+
 /**
- * Install a database adapter for use
+ * Install the mock adapter for use
  */
-AdapterCouchbaseInstaller.prototype.Mock = {
-    install: function installCouchbase(cushion, options) {
-        options = options || this.options || {};
+MockAdapterCouchbaseInstaller.prototype.install =
+function installMockCouchbase(cushion, options) {
+    options = options || this.options || {};
 
-        var adapter = new MockAdapter();
+    var adapter = new MockAdapter();
 
-        cushion._adapter = adapter;
-        debug('set cushion adapter to this');
+    cushion._adapter = adapter;
+    debug('set cushion adapter to this');
 
-        if (!options.skipMethods) {
-            var methods = cushionMethods(cushion, adapter.Cb);
-            for (var key in methods) {
-                if (cushion[key]) continue;
+    if (!options.skipMethods) {
+        var methods = cushionMethods(cushion, adapter.Cb);
+        for (var key in methods) {
+            if (cushion[key]) continue;
 
-                cushion[key] = methods[key].bind(cushion);
-                debug('bound method `'+key+'` to cushion');
-            }
+            cushion[key] = methods[key].bind(cushion);
+            debug('bound method `'+key+'` to cushion');
         }
+    }
 
-        if (!options.skipProperties) {
+    if (!options.skipProperties) {
 
-            // Add the Cb properties to the cushion instance itself
-            cushion.Cb =
-            cushion.Couchbase =
-                adapter.Couchbase;
+        // Add the Cb properties to the cushion instance itself
+        cushion.Cb =
+        cushion.Couchbase =
+            adapter.Couchbase;
 
-        }
+    }
 
-        return this;
-    },
+    return this;
 };
 
+AdapterCouchbaseInstaller.prototype.Mock = new MockAdapterCouchbaseInstaller();

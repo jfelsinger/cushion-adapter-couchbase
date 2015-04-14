@@ -1,4 +1,4 @@
-# Cushion Adapter Couchbase
+# Cushion Adapter Couchbase [![Build Status](https://secure.travis-ci.org/jfelsinger/cushion-adapter-couchbase.png?branch=master)](https://travis-ci.org/jfelsinger/cushion-adapter-couchbase) [![Analytics](https://ga-beacon.appspot.com/UA-46797352-2/cushion-adapter-couchbase/index)](https://github.com/igrigorik/ga-beacon)
 ## An adapter for connecting to a Couchbase DB through Couch-cushion
 
 ### Installation

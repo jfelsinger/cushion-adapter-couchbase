@@ -83,14 +83,20 @@ AdapterCouchbase.prototype.get =
 function get(names) {
     if (!Array.isArray(names)) {
         debug('get (1) doc: ', names);
+
+        this.options.bucket.get.apply(
+            this.options.bucket,
+            arguments
+        );
     } else {
         debug('get ('+names.length+') docs');
-    }
 
-    this.options.bucket.get.apply(
-        this.options.bucket,
-        arguments
-    );
+
+        this.options.bucket.getMulti.apply(
+            this.options.bucket,
+            arguments
+        );
+    }
 
     return this;
 };
@@ -100,6 +106,7 @@ function get(names) {
  * Save objects to Couchbase
  */
 AdapterCouchbase.prototype.save =
+AdapterCouchbase.prototype.upsert =
 function save(names, data, cb) {
     if (!Array.isArray(names)) {
         debug('save (1) doc: ', names);
@@ -124,6 +131,8 @@ function save(names, data, cb) {
  * Remove objects from Couchbase
  */
 AdapterCouchbase.prototype.del =
+AdapterCouchbase.prototype.remove =
+AdapterCouchbase.prototype.delete =
 function del(names) {
     if (!Array.isArray(names)) {
         debug('delete (1) doc: ', names);
@@ -171,6 +180,7 @@ function insert(names, data, cb) {
  * Update objects in Couchbase
  */
 AdapterCouchbase.prototype.update =
+AdapterCouchbase.prototype.replace =
 function update(names, data, cb) {
     if (!Array.isArray(names)) {
         debug('update (1) doc: ', names);
