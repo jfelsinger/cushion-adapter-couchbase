@@ -65,11 +65,38 @@ describe('Adapter', function() {
         });
     });
 
+    describe('#get/setOption', function() {
+
+        it('should set an option value', function() {
+            adapter.setOption('test_option', 20);
+            adapter.options.test_option.should.equal(20);
+        });
+
+        it('should get an option value', function() {
+            adapter.getOption('bucket').should.match(adapter.options.bucket);
+        });
+
+    });
+
     describe('#save', function() {
         it('should save a new doc', function(done) {
             var doc = { id:3, text:'test' };
 
             adapter.save('doc::3', doc, function(err, res) {
+                if (err) throw err;
+
+                bucket.get('doc::3', function(err, res) {
+                    if (err) throw err;
+                    res.value.should.match(doc);
+                    done();
+                });
+            });
+        });
+
+        it('should save a doc from an array', function(done) {
+            var doc = { id:3, text:'test' };
+
+            adapter.save(['doc::3'], doc, function(err, res) {
                 if (err) throw err;
 
                 bucket.get('doc::3', function(err, res) {
@@ -112,31 +139,31 @@ describe('Adapter', function() {
         //
         // This isn't in base couchbase, we can implement it later
         //
-        // it('should remove multiple documents', function(done) {
-        //     adapter.del(['doc::1','doc::2'], function(err, res) {
-        //         if (err) throw err;
+        it('should remove multiple documents', function(done) {
+            adapter.del(['doc::1','doc::2'], function(err, res) {
+                if (err) throw err;
 
-        //         async.parallel([
-        //             function(cb) {
-        //                 bucket.get('doc::1', function(err, res) {
-        //                     err.message.should.equal('key not found');
-        //                     should(res).be.null;
-        //                     cb();
-        //                 });
-        //             },
-        //             function(cb) {
-        //                 bucket.get('doc::2', function(err, res) {
-        //                     err.message.should.equal('key not found');
-        //                     should(res).be.null;
-        //                     cb();
-        //                 });
-        //             }
-        //         ], function(err) {
-        //             if (err) throw err;
-        //             done();
-        //         });
-        //     });
-        // });
+                async.parallel([
+                    function(cb) {
+                        bucket.get('doc::1', function(err, res) {
+                            err.message.should.equal('key not found');
+                            should(res).be.null;
+                            cb();
+                        });
+                    },
+                    function(cb) {
+                        bucket.get('doc::2', function(err, res) {
+                            err.message.should.equal('key not found');
+                            should(res).be.null;
+                            cb();
+                        });
+                    }
+                ], function(err) {
+                    if (err) throw err;
+                    done();
+                });
+            });
+        });
 
     });
 
@@ -145,6 +172,20 @@ describe('Adapter', function() {
             var doc = { id:3, text:'test' };
 
             adapter.insert('doc::3', doc, function(err, res) {
+                if (err) throw err;
+
+                bucket.get('doc::3', function(err, res) {
+                    if (err) throw err;
+                    res.value.should.match(doc);
+                    done();
+                });
+            });
+        });
+
+        it('should insert a new doc from array', function(done) {
+            var doc = { id:3, text:'test' };
+
+            adapter.insert(['doc::3'], doc, function(err, res) {
                 if (err) throw err;
 
                 bucket.get('doc::3', function(err, res) {
@@ -173,10 +214,33 @@ describe('Adapter', function() {
             });
         });
 
+        it('should not insert any new docs from array', function(done) {
+            var doc = { id:3, text:'test' };
+
+            adapter.update(['doc::3','doc::24'], doc, function(err, res) {
+                err.message.should.equal('key does not exist');
+                done();
+            });
+        });
+
         it('should update an existing doc', function(done) {
             docs[0].text = 'New Text';
 
             adapter.save('doc::1', docs[0], function(err, res) {
+                if (err) throw err;
+
+                bucket.get('doc::1', function(err, res) {
+                    if (err) throw err;
+                    res.value.should.match(docs[0]);
+                    done();
+                });
+            });
+        });
+
+        it('should update an existing doc from array', function(done) {
+            docs[0].text = 'New Text';
+
+            adapter.save(['doc::1'], docs[0], function(err, res) {
                 if (err) throw err;
 
                 bucket.get('doc::1', function(err, res) {

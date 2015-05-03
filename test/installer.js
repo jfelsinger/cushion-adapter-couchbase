@@ -72,4 +72,18 @@ describe('Adapter Installer', function() {
         });
     });
 
+    describe('#get/setOption', function() {
+
+        it('should set an option value', function() {
+            adapterInstaller.setOption('test_option', 20);
+            adapterInstaller.options.test_option.should.equal(20);
+        });
+
+        it('should get an option value', function() {
+            adapterInstaller.options.test_option = 20;
+            adapterInstaller.getOption('test_option').should.match(adapterInstaller.options.test_option);
+        });
+
+    });
+
 });

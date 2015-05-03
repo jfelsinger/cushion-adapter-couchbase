@@ -38,6 +38,24 @@ describe('Mock Adapter', function() {
         });
     });
 
+    describe('#connect', function() {
+        it('should set options on bucket', function() {
+            adapter = new Adapter();
+            adapter.connect({
+                connectionTimeout: 8,
+                operationTimeout: 8,
+                viewTimeout: 8,
+                managementTimeout: 8,
+            });
+
+            var bucket = adapter.options.bucket;
+            bucket.connectionTimeout.should.equal(8);
+            bucket.operationTimeout.should.equal(8);
+            bucket.viewTimeout.should.equal(8);
+            bucket.managementTimeout.should.equal(8);
+        });
+    });
+
     describe('#get', function() {
         it('should retrieve a document', function(done) {
             adapter.get('doc::1', function(err, res) {

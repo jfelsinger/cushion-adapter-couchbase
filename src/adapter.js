@@ -133,17 +133,21 @@ function save(names, data, cb) {
 AdapterCouchbase.prototype.del =
 AdapterCouchbase.prototype.remove =
 AdapterCouchbase.prototype.delete =
-function del(names) {
+function del(names, cb) {
     if (!Array.isArray(names)) {
         debug('delete (1) doc: ', names);
+        names = [names];
     } else {
         debug('delete ('+names.length+') docs');
     }
 
-    this.options.bucket.remove.apply(
-        this.options.bucket,
-        arguments
-    );
+    var requests = names.map(function(name) {
+        return function(cb) {
+            this.options.bucket.remove(name, cb);
+        }.bind(this);
+    }.bind(this));
+
+    async.parallel(requests, cb);
 
     return this;
 };
