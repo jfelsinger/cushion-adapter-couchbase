@@ -17,7 +17,8 @@
     "gulp-mocha": "^2.0.0",
     "gulp": "^3.8.10",
     "gulp-jshint": "^1.9.0",
-    "couch-cushion": "^0.3.3"
+    "couch-cushion": "^0.3.3",
+    "gulp-istanbul": "^0.8.1"
   },
   "dependencies": {
     "couchbase": "^2.0.6",
