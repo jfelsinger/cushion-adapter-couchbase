@@ -23,7 +23,7 @@ options on to the adapter.
 
 ## Configuration Options
 
-```
+```javascript
 {
     host:       undefined,  // The host that the CB cluster is located on
     bucket:     'default',  // The bucket name to connect to
@@ -174,4 +174,26 @@ Ex:
 
 ```javascript
 cushion.oneFromView('User', cb, 'by_username', 'jfelsinger', 'userDesignDoc');
+```
+
+
+### CouchCushion.rawQuery(*query*, *cb*[, *db])
+
+Gets the raw results of a query, similar to calling `bucket.query`.
+
+Ex:
+
+```javascript
+// Using a view-query
+var query = cushion.CB.ViewQuery
+    .from('userDesignDoc', 'by_username')
+    .key('jfelsinger');
+
+cushion.rawQuery(query, cb);
+
+
+// Using an n1ql query-string
+query = "SELECT * FROM default WHERE name='test'";
+
+cushion.rawQuery(query, cb);
 ```
