@@ -38,6 +38,11 @@ options on to the adapter.
     opartionTimeout:    undefined,
     opartionTimeout:    undefined,
     managementTimeout:  undefined,
+
+    // N1ql server endpoints to be enabled via:
+    // bucket.enableN1ql(/* ... */)
+
+    n1qlEndpoints:      undefined,
 }
 ```
 
