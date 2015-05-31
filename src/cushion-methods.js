@@ -109,7 +109,48 @@ module.exports = function(cushion, Couchbase) {
         },
 
 
+
         // Query
+
+
+        /**
+         * Get the raw server results from a query
+         *
+         * @param {Model|string} model - The model type that will be returned
+         * @param {*} cb
+         * @param {*} query - A Couchbase query to be executed
+         * @param {*} adapter
+         * @returns {AdapterCouchbase}
+         */
+        rawQuery: function fromN1ql(query, cb, db) {
+            db = db || this._adapter;
+
+            if (typeof(query) === 'string')
+                query = Couchbase.N1qlQuery.fromString(query);
+
+            db.query(query, cb);
+
+            return this;
+        },
+
+
+        /**
+         * Get documents from an n1ql query
+         *
+         * @param {Model|string} model - The model type that will be returned
+         * @param {*} cb
+         * @param {*} query - A Couchbase query to be executed
+         * @param {*} adapter
+         * @returns {AdapterCouchbase}
+         */
+        n1ql: function fromN1ql(model, query, cb, db) {
+            if (typeof(query) === 'string')
+                query = Couchbase.N1qlQuery.fromString(query);
+
+            this.fromQuery(model, cb, query, db);
+
+            return this;
+        },
 
 
         /**
@@ -206,6 +247,7 @@ module.exports = function(cushion, Couchbase) {
 
             return this;
         },
+
 
 
         // Views

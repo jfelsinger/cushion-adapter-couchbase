@@ -69,6 +69,11 @@ AdapterCouchbase.prototype.connect = function connect(options) {
     if (options.managementTimeout)
         bucket.managementTimeout = options.managementTimeout;
 
+    // Optionally, enable n1ql on the bucket
+    if (options.n1qlEndpoints)
+        bucket.enableN1ql(options.n1qlEndpoints);
+
+
     this.options.cluster = cluster;
     this.options.bucket = bucket;
 
