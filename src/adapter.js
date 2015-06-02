@@ -3,6 +3,7 @@
 var debug = require('debug')('cc-adapter:couchbase');
 
 var Couchbase = require('couchbase'),
+    request = require('superagent'),
     async = require('async');
 
 /**
@@ -70,8 +71,14 @@ AdapterCouchbase.prototype.connect = function connect(options) {
         bucket.managementTimeout = options.managementTimeout;
 
     // Optionally, enable n1ql on the bucket
-    if (options.n1qlEndpoints)
+    if (options.n1qlEndpoints) {
         bucket.enableN1ql(options.n1qlEndpoints);
+
+        // Save endpoint
+        this.options.n1qlEndpoint = options.n1qlEndpoints;
+        if (Array.isArray(this.options.n1qlEndpoint))
+            this.options.n1qlEndpoint = this.options.n1qlEndpoint[0];
+    }
 
 
     this.options.cluster = cluster;
@@ -214,14 +221,54 @@ function update(names, data, cb) {
  * Query objects from Couchbase
  */
 AdapterCouchbase.prototype.query =
-function query() {
-    this.options.bucket.query.apply(
-        this.options.bucket,
-        arguments
-    );
+function query(q) {
+    if (typeof(q) === 'string' ||
+        q instanceof Couchbase.N1qlQuery) {
+        this.n1qlQuery.apply(this, arguments);
+    } else {
+        this.options.bucket.query.apply(
+            this.options.bucket,
+            arguments
+        );
+    }
 
     return this;
 };
+
+
+/**
+ * Patch n1ql querying with direct http access
+ */
+AdapterCouchbase.prototype.n1qlQuery =
+function n1qlQuery(query, cb) {
+    if (typeof(query.toObject) === 'function') {
+        query = query.toObject();
+    } else {
+        query = { statement: query };
+    }
+
+    request
+        .get(this.options.n1qlEndpoint)
+        .query(query)
+        .end(function(err, res) {
+            var body, rows;
+
+            try {
+                body = JSON.parse(res && res.text);
+                rows = body && body.results;
+            } catch(e) {
+                console.log(e);
+                console.log(res.text);
+                body = res.body || res.text || res;
+                rows = body && body.results;
+            }
+
+            cb(err, rows || body || res, res);
+        });
+
+    return this;
+};
+
 
 
 
