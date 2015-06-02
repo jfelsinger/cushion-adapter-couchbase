@@ -21,8 +21,9 @@
     "gulp-istanbul": "^0.8.1"
   },
   "dependencies": {
-    "couchbase": "^2.0.6",
+    "couchbase": "^2.0.8",
     "async": "^0.9.0",
-    "debug": "^2.1.1"
+    "debug": "^2.1.1",
+    "superagent": "^1.2.0"
   }
 }

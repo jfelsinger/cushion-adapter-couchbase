@@ -12,6 +12,9 @@ module.exports = function(cushion, Couchbase) {
 
             if (value.value)
                 return getResults(value.value);
+
+            if (value.default)
+                return getResults(value.default);
         }
 
         return value;
