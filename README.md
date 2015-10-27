@@ -28,7 +28,7 @@ options on to the adapter.
     host:       undefined,  // The host that the CB cluster is located on
     bucket:     'default',  // The bucket name to connect to
 
-    bucketPass: null,       // If there is a password on the bucket
+    bucketPassword: null,       // If there is a password on the bucket
 
 
     // Optional, timeouts for different operations.
